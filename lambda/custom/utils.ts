@@ -1,5 +1,5 @@
 import { HandlerInput } from "ask-sdk-core";
-import { RequestAttributes, SessionAttributes } from "./interfaces";
+import { RequestAttributes } from "./interfaces";
 import { Intent, slu } from "ask-sdk-model";
 
 export function IsIntent(handlerInput: HandlerInput, intent: string): boolean {
@@ -40,10 +40,6 @@ export function IsIntentWithCompleteDialog(handlerInput: HandlerInput, intent: s
 
 export function GetRequestAttributes(handlerInput: HandlerInput): RequestAttributes {
     return handlerInput.attributesManager.getRequestAttributes() as RequestAttributes;
-}
-
-export function GetSessionAttributes(handlerInput: HandlerInput): SessionAttributes {
-    return handlerInput.attributesManager.getSessionAttributes() as SessionAttributes;
 }
 
 export function GetValuesForSlot(intent: Intent, slotName: string): Array<slu.entityresolution.ValueWrapper> | undefined {
