@@ -1,6 +1,17 @@
-# Alexa Skill using AWS Lambda in Typescript
+# Alexa Skill for Romanian Radios
 
-This is a simple starter project for Alexa skills using Typescript. 
+This is a simple skill which allows you to play some of the most popular Romanian radio stations.
+
+## Supported stations
+
+Currently, the supported radio stations are:
+
+- [Kiss FM](https://www.kissfm.ro/)
+- [Rock FM](https://www.rockfm.ro/)
+- [Magic FM](https://www.magicfm.ro/)
+- [Europa FM](https://www.europafm.ro/)
+
+You can find the stations inside `./lambda/custom/Stations.ts`.
 
 ## Pre-requisites
 
