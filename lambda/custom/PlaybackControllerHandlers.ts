@@ -8,9 +8,18 @@ export const PlayCommandIssuedHandler: RequestHandler = {
         return IsType(handlerInput, "PlaybackController.PlayCommandIssued");
     },
     handle(handlerInput) {
-        const radio = Radio.for(Station.KissFM);
+        const audioPlayer = handlerInput.requestEnvelope.context.AudioPlayer;
 
-        return audio.play(radio.url, 0);
+        if (audioPlayer && audioPlayer.token) {
+            const radio = Radio.for(audioPlayer.token as Station);
+
+            // you cannot include speech or card for this
+            return audio.play(radio.url, audioPlayer.token, 0)
+                .getResponse();
+        }
+
+        return handlerInput.responseBuilder
+            .getResponse();
     }
 };
 

@@ -8,7 +8,7 @@
           "apis": {
             "custom": {
               "endpoint": {
-                "uri": "alexa-typescript-hello-world-default"
+                "uri": "alexa-romanian-radio-default"
               }
             }
           }

@@ -8,20 +8,12 @@ export const LaunchRequestHandler: RequestHandler = {
         return IsType(handlerInput, "LaunchRequest");
     },
     handle(handlerInput) {
-        return PlayAudioIntentHandler.handle(handlerInput);
-    }
-};
-
-export const PlayAudioIntentHandler: RequestHandler = {
-    canHandle(handlerInput) {
-        return IsIntent(handlerInput, "PlayAudio");
-    },
-    handle(handlerInput) {
         const requestAttributes = GetRequestAttributes(handlerInput);
 
-        const radio = Radio.for(Station.KissFM); // currently hardcoded station
-
-        return audio.play(radio.url, 0, requestAttributes.t("WELCOME_MSG", radio.name), radio.card);
+        return handlerInput.responseBuilder
+            .speak(requestAttributes.t("WELCOME_MSG"))
+            .reprompt(requestAttributes.t("HELP_MSG"))
+            .getResponse();
     }
 };
 
@@ -74,9 +66,19 @@ export const ResumeIntentHandler: RequestHandler = {
     handle(handlerInput) {
         const requestAttributes = GetRequestAttributes(handlerInput);
 
-        const radio = Radio.for(Station.KissFM); // currently hardcoded station
+        const audioPlayer = handlerInput.requestEnvelope.context.AudioPlayer;
 
-        return audio.play(radio.url, 0, requestAttributes.t("WELCOME_MSG", radio.name), radio.card);
+        if (audioPlayer && audioPlayer.token) {
+            const radio = Radio.for(audioPlayer.token as Station);
+
+            return audio.play(radio.url, audioPlayer.token, 0, undefined, radio.card)
+                .getResponse();
+        }
+
+        return handlerInput.responseBuilder
+            .speak(requestAttributes.t("WHICH_STATION_MSG"))
+            .reprompt(requestAttributes.t("HELP_MSG"))
+            .getResponse();
     }
 };
 
@@ -136,7 +138,8 @@ export const CancelAndStopAndPauseIntentHandler: RequestHandler = {
     handle(handlerInput) {
         const requestAttributes = GetRequestAttributes(handlerInput);
 
-        return audio.stop(requestAttributes.t("STOP_MSG"));
+        return audio.stop(requestAttributes.t("STOP_MSG"))
+            .getResponse();
     }
 };
 
@@ -145,7 +148,8 @@ export const PauseIntentHandler: RequestHandler = {
         return IsIntent(handlerInput, "AMAZON.PauseIntent");
     },
     handle(handlerInput) {
-        return audio.pause();
+        return audio.pause()
+            .getResponse();
     }
 };
 

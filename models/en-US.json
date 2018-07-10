@@ -3,7 +3,17 @@
     "languageModel": {
       "invocationName": "romanian radio",
       "intents": [{
-          "name": "PlayAudio",
+          "name": "PlayRadio",
+          "slots": [{
+            "name": "station",
+            "type": "STATION",
+            "samples": [
+              "play {station} please",
+              "play {station}",
+              "{station} please",
+              "{station}"
+            ]
+          }],
           "samples": [
             "play",
             "start",
@@ -20,14 +30,22 @@
             "start the music",
             "start the music please",
             "play the music",
-            "play the music please"
+            "play the music please",
+            "play {station}",
+            "start {station}",
+            "play {station} please",
+            "start {station} please",
+            "{station}",
+            "{station} please"
           ]
         },
         {
-          "name": "AMAZON.PauseIntent"
+          "name": "AMAZON.PauseIntent",
+          "samples": []
         },
         {
-          "name": "AMAZON.ResumeIntent"
+          "name": "AMAZON.ResumeIntent",
+          "samples": []
         },
         {
           "name": "AMAZON.HelpIntent",
@@ -44,15 +62,106 @@
           ]
         },
         {
-          "name": "AMAZON.StopIntent"
+          "name": "AMAZON.StopIntent",
+          "samples": []
         },
         {
-          "name": "AMAZON.CancelIntent"
+          "name": "AMAZON.CancelIntent",
+          "samples": []
         },
         {
-          "name": "AMAZON.StartOverIntent"
+          "name": "AMAZON.StartOverIntent",
+          "samples": []
+        }
+      ],
+      "types": [{
+        "values": [{
+            "id": "europafm",
+            "name": {
+              "value": "Europa FM",
+              "synonyms": [
+                "Europa",
+                "Europa F.M."
+              ]
+            }
+          },
+          {
+            "id": "magicfm",
+            "name": {
+              "value": "Magic FM",
+              "synonyms": [
+                "Magic",
+                "Magic F.M."
+              ]
+            }
+          },
+          {
+            "id": "rockfm",
+            "name": {
+              "value": "Rock FM",
+              "synonyms": [
+                "Rock",
+                "Rock F.M."
+              ]
+            }
+          },
+          {
+            "id": "radiozu",
+            "name": {
+              "value": "Radio ZU",
+              "synonyms": [
+                "zu"
+              ]
+            }
+          },
+          {
+            "id": "kissfm",
+            "name": {
+              "value": "Kiss FM",
+              "synonyms": [
+                "Kiss",
+                "Kiss F.M."
+              ]
+            }
+          }
+        ],
+        "name": "STATION"
+      }]
+    },
+    "dialog": {
+      "intents": [{
+        "name": "PlayRadio",
+        "confirmationRequired": false,
+        "slots": [{
+          "name": "station",
+          "type": "STATION",
+          "elicitationRequired": true,
+          "confirmationRequired": false,
+          "prompts": {
+            "elicitation": "Elicit.Slot.1100242290888.1187075293764"
+          }
+        }]
+      }]
+    },
+    "prompts": [{
+      "id": "Elicit.Slot.1100242290888.1187075293764",
+      "variations": [{
+          "type": "PlainText",
+          "value": "Which station do you want?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What would you like to listen?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What station would you like?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What would you like to listen to?"
         }
       ]
-    }
+    }]
   }
 }

@@ -1,10 +1,11 @@
-import { ui, Response } from "ask-sdk-model";
-import { ResponseFactory } from "ask-sdk-core";
+import { ui } from "ask-sdk-model";
+import { ResponseFactory, ResponseBuilder } from "ask-sdk-core";
 
 export class AudioController {
-    play(url: string, offset: number, text?: string, cardData?: ui.StandardCard): Response {
+    play(url: string, token: string, offset: number, text?: string, cardData?: ui.StandardCard): ResponseBuilder {
         const result = ResponseFactory.init();
 
+        // TODO: - investigate this, it doesn't seem to be displayed
         if (cardData) {
             result.withStandardCard(
                 cardData.title ? cardData.title : "",
@@ -15,41 +16,44 @@ export class AudioController {
         }
 
         // we are using url as token as they are all unique
-        result.addAudioPlayerPlayDirective("REPLACE_ALL", url, url, offset)
+        result.addAudioPlayerPlayDirective("REPLACE_ALL", url, token, offset)
             .withShouldEndSession(true);
 
         if (text) {
             result.speak(text);
         }
 
-        return result.getResponse();
+        return result;
     }
 
-    pause(): Response {
+    pause(): ResponseBuilder {
         const result = ResponseFactory.init();
 
         result
             .addAudioPlayerStopDirective()
 
-        return result.getResponse();
+        return result;
     }
 
-    stop(text: string): Response {
+    stop(text?: string): ResponseBuilder {
         const result = ResponseFactory.init();
 
         result
-            .addAudioPlayerStopDirective()
-            .speak(text);
+            .addAudioPlayerStopDirective();
 
-        return result.getResponse();
+        if (text) {
+            result.speak(text);
+        }
+
+        return result;
     }
 
-    clear(): Response {
+    clear(): ResponseBuilder {
         const result = ResponseFactory.init();
 
         result.addAudioPlayerClearQueueDirective("CLEAR_ALL");
 
-        return result.getResponse();
+        return result;
     }
 }
 
