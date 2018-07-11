@@ -1,6 +1,5 @@
 import { HandlerInput } from "ask-sdk-core";
-import { RequestAttributes } from "./interfaces";
-import { Intent, slu } from "ask-sdk-model";
+import { RequestAttributes, Slots, SlotValues } from "./interfaces";
 
 export function IsIntent(handlerInput: HandlerInput, intent: string): boolean {
     return handlerInput.requestEnvelope.request.type === "IntentRequest"
@@ -42,20 +41,71 @@ export function GetRequestAttributes(handlerInput: HandlerInput): RequestAttribu
     return handlerInput.attributesManager.getRequestAttributes() as RequestAttributes;
 }
 
-export function GetValuesForSlot(intent: Intent, slotName: string): Array<slu.entityresolution.ValueWrapper> | undefined {
-    if (intent.slots) {
-        const slot = intent.slots[slotName];
-        if (slot && slot.resolutions
-            && slot.resolutions.resolutionsPerAuthority
-            && slot.resolutions.resolutionsPerAuthority[0]
-            && slot.resolutions.resolutionsPerAuthority[0].status
-            && slot.resolutions.resolutionsPerAuthority[0].status.code) {
-            const code = slot.resolutions.resolutionsPerAuthority[0].status.code;
-            switch (code) {
-                case "ER_SUCCESS_MATCH":
-                    return slot.resolutions.resolutionsPerAuthority[0].values;
+export function GetSlotValues(filledSlots?: Slots): SlotValues {
+    const slotValues: SlotValues = {};
+
+    if (filledSlots) {
+        Object.keys(filledSlots).forEach((item) => {
+            const name = filledSlots[item].name;
+            const value = filledSlots[item].value;
+            const confirmationStatus = filledSlots[item].confirmationStatus;
+
+            if (filledSlots[item] &&
+                filledSlots[item].resolutions &&
+                filledSlots[item].resolutions!.resolutionsPerAuthority &&
+                filledSlots[item].resolutions!.resolutionsPerAuthority![0] &&
+                filledSlots[item].resolutions!.resolutionsPerAuthority![0].status &&
+                filledSlots[item].resolutions!.resolutionsPerAuthority![0].status.code) {
+                switch (filledSlots[item].resolutions!.resolutionsPerAuthority![0].status.code) {
+                    case "ER_SUCCESS_MATCH":
+                        const valueWrappers = filledSlots[item].resolutions!.resolutionsPerAuthority![0].values;
+
+                        if (valueWrappers.length > 1) {
+                            slotValues[name] = {
+                                name: name,
+                                value: value,
+                                isMatch: true,
+                                resolved: valueWrappers[0].value.name,
+                                id: valueWrappers[0].value.id,
+                                isAmbiguous: true,
+                                values: valueWrappers.map((valueWrapper) => valueWrapper.value),
+                                confirmationStatus: confirmationStatus,
+                            };
+                            break;
+                        }
+
+                        slotValues[name] = {
+                            name: name,
+                            value: value,
+                            isMatch: true,
+                            resolved: valueWrappers[0].value.name,
+                            id: valueWrappers[0].value.id,
+                            isAmbiguous: false,
+                            values: [],
+                            confirmationStatus: confirmationStatus,
+                        };
+                        break;
+                    case "ER_SUCCESS_NO_MATCH":
+                        slotValues[name] = {
+                            name: name,
+                            value: value,
+                            isMatch: false,
+                            confirmationStatus: confirmationStatus,
+                        };
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                slotValues[name] = {
+                    name: name,
+                    value: value,
+                    isMatch: false,
+                    confirmationStatus: confirmationStatus,
+                };
             }
-        }
+        });
     }
-    return undefined;
+
+    return slotValues;
 }

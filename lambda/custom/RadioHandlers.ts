@@ -1,7 +1,6 @@
 import { RequestHandler } from "ask-sdk-core";
-import { IntentRequest, slu } from "ask-sdk-model";
-import { first } from "lodash";
-import { GetRequestAttributes, IsIntentWithIncompleteDialog, IsIntentWithCompleteDialog, GetValuesForSlot } from "./utils";
+import { IntentRequest } from "ask-sdk-model";
+import { GetRequestAttributes, IsIntentWithIncompleteDialog, IsIntentWithCompleteDialog, GetSlotValues } from "./utils";
 import { Radio, Station } from "./Stations";
 import { audio } from "./AudioController";
 
@@ -12,10 +11,36 @@ export const InProgressPlayRadioIntentHandler: RequestHandler = {
         return IsIntentWithIncompleteDialog(handlerInput, "PlayRadio");
     },
     handle(handlerInput) {
+        const requestAttributes = GetRequestAttributes(handlerInput);
+
         const request = handlerInput.requestEnvelope.request as IntentRequest;
+        const currentIntent = request.intent;
+
+        const slots = GetSlotValues(currentIntent.slots);
+
+        const station = slots[StationSlotName];
+
+        if (station && station.isMatch && station.isAmbiguous) {
+            let prompt = "";
+            const size = station.values.length;
+
+            station.values
+                .forEach((element, index) => {
+                    prompt += `${(index === size - 1) ? " or" : " "} ${element.name}`;
+                });
+
+            return handlerInput.responseBuilder
+                .speak(requestAttributes.t("SELECT_ONE_MSG", prompt))
+                .reprompt(requestAttributes.t("SELECT_ONE_MSG", prompt))
+                .addElicitSlotDirective(station.name)
+                .getResponse();
+        }
+
+        // otherwise let Alexa reprompt the user
+        // or switch to the completed handler if it's done
 
         return handlerInput.responseBuilder
-            .addDelegateDirective(request.intent)
+            .addDelegateDirective(currentIntent)
             .getResponse();
     }
 };
@@ -28,13 +53,23 @@ export const CompletedPlayRadioIntentHandler: RequestHandler = {
         const requestAttributes = GetRequestAttributes(handlerInput);
 
         const request = handlerInput.requestEnvelope.request as IntentRequest;
-        const currentIntent = request.intent;
 
-        const station = first(GetValuesForSlot(currentIntent, StationSlotName)) as slu.entityresolution.ValueWrapper;
+        const slots = GetSlotValues(request.intent.slots);
 
-        const radio = Radio.for(station.value.id as Station);
+        const station = slots[StationSlotName];
 
-        return audio.play(radio.url, station.value.id, 0, requestAttributes.t("PLAYING_MSG", radio.name), radio.card)
+        // if we have a match and it is not ambiguous (only one resolved value)
+        // play it directly
+        if (station && station.isMatch && !station.isAmbiguous) {
+            const radio = Radio.for(station.id as Station);
+
+            return audio.play(radio.url, station.id, 0, requestAttributes.t("PLAYING_MSG", radio.name), radio.card)
+                .getResponse();
+        }
+
+        return handlerInput.responseBuilder
+            .speak(requestAttributes.t("WHICH_STATION_MSG"))
+            .addElicitSlotDirective(StationSlotName)
             .getResponse();
     }
 };

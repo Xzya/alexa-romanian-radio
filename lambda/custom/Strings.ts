@@ -10,6 +10,7 @@ export const strings: Resource = {
             CAN_NOT_SKIP_MSG: "This is radio, you have to wait for next track to play.",
             NOT_POSSIBLE_MSG: "This is radio, you can not do that.  You can ask me to stop or pause to stop listening.",
             STOP_MSG: "Goodbye.",
+            SELECT_ONE_MSG: "Which would you like: %s?",
         },
     },
 };
