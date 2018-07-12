@@ -11,7 +11,7 @@ export const InProgressPlayRadioIntentHandler: RequestHandler = {
         return IsIntentWithIncompleteDialog(handlerInput, "PlayRadio");
     },
     handle(handlerInput) {
-        const requestAttributes = GetRequestAttributes(handlerInput);
+        const { t } = GetRequestAttributes(handlerInput);
 
         const request = handlerInput.requestEnvelope.request as IntentRequest;
         const currentIntent = request.intent;
@@ -26,12 +26,12 @@ export const InProgressPlayRadioIntentHandler: RequestHandler = {
 
             station.values
                 .forEach((element, index) => {
-                    prompt += `${(index === size - 1) ? " or" : " "} ${element.name}`;
+                    prompt += `${(index === size - 1) ? t("OR_MSG") : " "} ${element.name}`;
                 });
 
             return handlerInput.responseBuilder
-                .speak(requestAttributes.t("SELECT_ONE_MSG", prompt))
-                .reprompt(requestAttributes.t("SELECT_ONE_MSG", prompt))
+                .speak(t("SELECT_ONE_MSG", prompt))
+                .reprompt(t("SELECT_ONE_MSG", prompt))
                 .addElicitSlotDirective(station.name)
                 .getResponse();
         }
@@ -50,7 +50,7 @@ export const CompletedPlayRadioIntentHandler: RequestHandler = {
         return IsIntentWithCompleteDialog(handlerInput, "PlayRadio");
     },
     handle(handlerInput) {
-        const requestAttributes = GetRequestAttributes(handlerInput);
+        const { t } = GetRequestAttributes(handlerInput);
 
         const request = handlerInput.requestEnvelope.request as IntentRequest;
 
@@ -63,12 +63,12 @@ export const CompletedPlayRadioIntentHandler: RequestHandler = {
         if (station && station.isMatch && !station.isAmbiguous) {
             const radio = Radio.for(station.id as Station);
 
-            return audio.play(radio.url, station.id, 0, requestAttributes.t("PLAYING_MSG", radio.name), radio.card)
+            return audio.play(radio.url, station.id, 0, t("PLAYING_MSG", radio.name), radio.card)
                 .getResponse();
         }
 
         return handlerInput.responseBuilder
-            .speak(requestAttributes.t("WHICH_STATION_MSG"))
+            .speak(t("WHICH_STATION_MSG"))
             .addElicitSlotDirective(StationSlotName)
             .getResponse();
     }

@@ -11,6 +11,7 @@ export const strings: Resource = {
             NOT_POSSIBLE_MSG: "This is radio, you can not do that.  You can ask me to stop or pause to stop listening.",
             STOP_MSG: "Goodbye.",
             SELECT_ONE_MSG: "Which would you like: %s?",
+            OR_MSG: " or",
         },
     },
 };

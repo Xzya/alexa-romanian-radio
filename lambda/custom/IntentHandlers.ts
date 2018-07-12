@@ -8,11 +8,11 @@ export const LaunchRequestHandler: RequestHandler = {
         return IsType(handlerInput, "LaunchRequest");
     },
     handle(handlerInput) {
-        const requestAttributes = GetRequestAttributes(handlerInput);
+        const { t } = GetRequestAttributes(handlerInput);
 
         return handlerInput.responseBuilder
-            .speak(requestAttributes.t("WELCOME_MSG"))
-            .reprompt(requestAttributes.t("HELP_MSG"))
+            .speak(t("WELCOME_MSG"))
+            .reprompt(t("HELP_MSG"))
             .getResponse();
     }
 };
@@ -22,11 +22,11 @@ export const HelpIntentHandler: RequestHandler = {
         return IsIntent(handlerInput, "AMAZON.HelpIntent");
     },
     handle(handlerInput) {
-        const requestAttributes = GetRequestAttributes(handlerInput);
+        const { t } = GetRequestAttributes(handlerInput);
 
         return handlerInput.responseBuilder
-            .speak(requestAttributes.t("HELP_MSG"))
-            .reprompt(requestAttributes.t("HELP_MSG"))
+            .speak(t("HELP_MSG"))
+            .reprompt(t("HELP_MSG"))
             .getResponse();
     }
 };
@@ -36,10 +36,10 @@ export const NextIntentHandler: RequestHandler = {
         return IsIntent(handlerInput, "AMAZON.NextIntent");
     },
     handle(handlerInput) {
-        const requestAttributes = GetRequestAttributes(handlerInput);
+        const { t } = GetRequestAttributes(handlerInput);
 
         return handlerInput.responseBuilder
-            .speak(requestAttributes.t("CAN_NOT_SKIP_MSG"))
+            .speak(t("CAN_NOT_SKIP_MSG"))
             .withShouldEndSession(true)
             .getResponse();
     }
@@ -50,10 +50,10 @@ export const PreviousIntentHandler: RequestHandler = {
         return IsIntent(handlerInput, "AMAZON.PreviousIntent");
     },
     handle(handlerInput) {
-        const requestAttributes = GetRequestAttributes(handlerInput);
+        const { t } = GetRequestAttributes(handlerInput);
 
         return handlerInput.responseBuilder
-            .speak(requestAttributes.t("CAN_NOT_SKIP_MSG"))
+            .speak(t("CAN_NOT_SKIP_MSG"))
             .withShouldEndSession(true)
             .getResponse();
     }
@@ -64,7 +64,7 @@ export const ResumeIntentHandler: RequestHandler = {
         return IsIntent(handlerInput, "AMAZON.ResumeIntent");
     },
     handle(handlerInput) {
-        const requestAttributes = GetRequestAttributes(handlerInput);
+        const { t } = GetRequestAttributes(handlerInput);
 
         const audioPlayer = handlerInput.requestEnvelope.context.AudioPlayer;
 
@@ -76,8 +76,8 @@ export const ResumeIntentHandler: RequestHandler = {
         }
 
         return handlerInput.responseBuilder
-            .speak(requestAttributes.t("WHICH_STATION_MSG"))
-            .reprompt(requestAttributes.t("HELP_MSG"))
+            .speak(t("WHICH_STATION_MSG"))
+            .reprompt(t("HELP_MSG"))
             .getResponse();
     }
 };
@@ -123,10 +123,10 @@ export const StartOverIntentHandler: RequestHandler = {
         return IsIntent(handlerInput, "AMAZON.StartOverIntent");
     },
     handle(handlerInput) {
-        const requestAttributes = GetRequestAttributes(handlerInput);
+        const { t } = GetRequestAttributes(handlerInput);
 
         return handlerInput.responseBuilder
-            .speak(requestAttributes.t("NOT_POSSIBLE_MSG"))
+            .speak(t("NOT_POSSIBLE_MSG"))
             .getResponse();
     }
 };
@@ -136,9 +136,9 @@ export const CancelAndStopAndPauseIntentHandler: RequestHandler = {
         return IsOneOfIntent(handlerInput, "AMAZON.CancelIntent", "AMAZON.StopIntent");
     },
     handle(handlerInput) {
-        const requestAttributes = GetRequestAttributes(handlerInput);
+        const { t } = GetRequestAttributes(handlerInput);
 
-        return audio.stop(requestAttributes.t("STOP_MSG"))
+        return audio.stop(t("STOP_MSG"))
             .getResponse();
     }
 };
