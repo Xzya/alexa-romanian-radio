@@ -38,7 +38,8 @@ export const InProgressPlayRadioIntentHandler: RequestHandler = {
                 .getResponse();
         }
 
-        // if we do not have a match (e.g. user said something invalid)
+        // if we have a station, but it is not matched against any of our values
+        // (e.g. if user said "asdf")
         // make sure to reset the value so that Alexa reprompts the user
         if (station && !station.isMatch) {
             ResetSlotValue(request, StationSlotName);
