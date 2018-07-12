@@ -1,5 +1,6 @@
 import { HandlerInput } from "ask-sdk-core";
 import { RequestAttributes, Slots, SlotValues } from "./interfaces";
+import { IntentRequest } from "../../node_modules/ask-sdk-model";
 
 export function IsIntent(handlerInput: HandlerInput, intent: string): boolean {
     return handlerInput.requestEnvelope.request.type === "IntentRequest"
@@ -39,6 +40,15 @@ export function IsIntentWithCompleteDialog(handlerInput: HandlerInput, intent: s
 
 export function GetRequestAttributes(handlerInput: HandlerInput): RequestAttributes {
     return handlerInput.attributesManager.getRequestAttributes() as RequestAttributes;
+}
+
+export function ResetSlotValue(request: IntentRequest, slotName: string) {
+    if (request.intent.slots) {
+        const slot = request.intent.slots[slotName];
+        if (slot) {
+            slot.value = "";
+        }
+    }
 }
 
 export function GetSlotValues(filledSlots?: Slots): SlotValues {

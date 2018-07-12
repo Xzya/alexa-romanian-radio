@@ -1,6 +1,6 @@
 import { RequestHandler } from "ask-sdk-core";
 import { IntentRequest } from "ask-sdk-model";
-import { GetRequestAttributes, IsIntentWithIncompleteDialog, IsIntentWithCompleteDialog, GetSlotValues } from "./utils";
+import { GetRequestAttributes, IsIntentWithIncompleteDialog, IsIntentWithCompleteDialog, GetSlotValues, ResetSlotValue } from "./utils";
 import { Radio, Station } from "./Stations";
 import { audio } from "./AudioController";
 
@@ -20,6 +20,8 @@ export const InProgressPlayRadioIntentHandler: RequestHandler = {
 
         const station = slots[StationSlotName];
 
+        // if we have a match but it's ambiguous
+        // ask for clarification
         if (station && station.isMatch && station.isAmbiguous) {
             let prompt = "";
             const size = station.values.length;
@@ -34,6 +36,12 @@ export const InProgressPlayRadioIntentHandler: RequestHandler = {
                 .reprompt(t("SELECT_ONE_MSG", prompt))
                 .addElicitSlotDirective(station.name)
                 .getResponse();
+        }
+
+        // if we do not have a match (e.g. user said something invalid)
+        // make sure to reset the value so that Alexa reprompts the user
+        if (station && !station.isMatch) {
+            ResetSlotValue(request, StationSlotName);
         }
 
         // otherwise let Alexa reprompt the user
