@@ -4,11 +4,11 @@ import { PlaybackStartedHandler, PlaybackFinishedHandler, PlaybackStoppedHandler
 import { CheckAudioInterfaceHandler, SessionEndedRequestHandler, LaunchRequestHandler, HelpIntentHandler, CancelAndStopAndPauseIntentHandler, NextIntentHandler, PreviousIntentHandler, ResumeIntentHandler, LoopOnIntentIntentHandler, LoopOffIntentHandler, ShuffleOnIntentHandler, ShuffleOffIntentHandler, StartOverIntentHandler, SystemExceptionEncounteredIntentHandler, GenericErrorHandler, PauseIntentHandler } from "./IntentHandlers";
 import { PlayCommandIssuedHandler, PausedCommandIssuedHandler, NextCommandIssuedHandler, PreviousCommandIssuedHandler } from "./PlaybackControllerHandlers";
 import { InProgressPlayRadioIntentHandler, CompletedPlayRadioIntentHandler } from "./RadioHandlers";
-import { DebugHandler } from "./DebugHandler";
+// import { DebugHandler } from "./DebugHandler";
 
 export const handler = SkillBuilders.custom()
     .addRequestHandlers(
-        DebugHandler,
+        // DebugHandler,
 
         CheckAudioInterfaceHandler,
         SessionEndedRequestHandler,
