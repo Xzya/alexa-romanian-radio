@@ -1,6 +1,6 @@
 import { HandlerInput } from "ask-sdk-core";
-import { RequestAttributes, Slots, SlotValues } from "./interfaces";
-import { IntentRequest } from "../../node_modules/ask-sdk-model";
+import { RequestAttributes, Slots, SlotValues } from "../interfaces";
+import { IntentRequest } from "ask-sdk-model";
 
 export function IsIntent(handlerInput: HandlerInput, intent: string): boolean {
     return handlerInput.requestEnvelope.request.type === "IntentRequest"
@@ -49,6 +49,19 @@ export function ResetSlotValue(request: IntentRequest, slotName: string) {
             slot.value = "";
         }
     }
+}
+
+export function ResetUnmatchedSlotValues(request: IntentRequest) {
+    const slots = GetSlotValues(request.intent.slots);
+
+    // reset invalid slots
+    Object.keys(slots).forEach((key) => {
+        const slot = slots[key];
+
+        if (slot && !slot.isMatch) {
+            ResetSlotValue(request, slot.name);
+        }
+    });
 }
 
 export function GetSlotValues(filledSlots?: Slots): SlotValues {

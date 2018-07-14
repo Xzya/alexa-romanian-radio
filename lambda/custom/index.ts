@@ -1,49 +1,54 @@
 import { SkillBuilders } from "ask-sdk-core";
-import { LocalizationInterceptor } from "./Interceptors";
-import { PlaybackStartedHandler, PlaybackFinishedHandler, PlaybackStoppedHandler, PlaybackNearlyFinishedHandler, PlaybackFailedHandler } from "./AudioHandlers";
-import { CheckAudioInterfaceHandler, SessionEndedRequestHandler, LaunchRequestHandler, HelpIntentHandler, CancelAndStopAndPauseIntentHandler, NextIntentHandler, PreviousIntentHandler, ResumeIntentHandler, LoopOnIntentIntentHandler, LoopOffIntentHandler, ShuffleOnIntentHandler, ShuffleOffIntentHandler, StartOverIntentHandler, SystemExceptionEncounteredIntentHandler, GenericErrorHandler, PauseIntentHandler } from "./IntentHandlers";
-import { PlayCommandIssuedHandler, PausedCommandIssuedHandler, NextCommandIssuedHandler, PreviousCommandIssuedHandler } from "./PlaybackControllerHandlers";
-import { InProgressPlayRadioIntentHandler, CompletedPlayRadioIntentHandler } from "./RadioHandlers";
-// import { DebugHandler } from "./DebugHandler";
+import * as Interceptors from "./interceptors/Localization";
+import * as AudioPlayerIntents from "./intents/audioplayer";
+import * as Intents from "./intents";
+import * as RadioIntents from "./intents/radio";
+import * as AudioPlayerPlaybackRequests from "./intents/audioplayer/playback";
+import * as PlaybackControllerRequests from "./intents/audioplayer/playbackcontroller";
+import * as Errors from "./errors";
 
 export const handler = SkillBuilders.custom()
     .addRequestHandlers(
         // DebugHandler,
 
-        CheckAudioInterfaceHandler,
-        SessionEndedRequestHandler,
+        // Make sure the device supports audio player
+        AudioPlayerIntents.CheckAudioInterface,
 
-        LaunchRequestHandler,
-        InProgressPlayRadioIntentHandler,
-        CompletedPlayRadioIntentHandler,
-        HelpIntentHandler,
-        CancelAndStopAndPauseIntentHandler,
-        PauseIntentHandler,
-        NextIntentHandler,
-        PreviousIntentHandler,
-        ResumeIntentHandler,
+        // Default intents
+        Intents.SessionEnded,
+        Intents.Launch,
+        Intents.Help,
+        Intents.Stop,
+        Intents.SystemExceptionEncountered,
 
-        LoopOnIntentIntentHandler,
-        LoopOffIntentHandler,
-        ShuffleOnIntentHandler,
-        ShuffleOffIntentHandler,
-        StartOverIntentHandler,
+        // Audio Player intents
+        AudioPlayerIntents.Pause,
+        AudioPlayerIntents.Next,
+        AudioPlayerIntents.Previous,
+        AudioPlayerIntents.Resume,
+        AudioPlayerIntents.LoopOn,
+        AudioPlayerIntents.LoopOff,
+        AudioPlayerIntents.ShuffleOn,
+        AudioPlayerIntents.ShuffleOff,
+        AudioPlayerIntents.StartOver,
 
-        SystemExceptionEncounteredIntentHandler,
-
-        // Audio Handlers
-        PlaybackStartedHandler,
-        PlaybackFinishedHandler,
-        PlaybackStoppedHandler,
-        PlaybackNearlyFinishedHandler,
-        PlaybackFailedHandler,
+        // Playback Handlers
+        AudioPlayerPlaybackRequests.PlaybackStarted,
+        AudioPlayerPlaybackRequests.PlaybackFinished,
+        AudioPlayerPlaybackRequests.PlaybackStopped,
+        AudioPlayerPlaybackRequests.PlaybackNearlyFinished,
+        AudioPlayerPlaybackRequests.PlaybackFailed,
 
         // Remote Control commands
-        PlayCommandIssuedHandler,
-        PausedCommandIssuedHandler,
-        NextCommandIssuedHandler,
-        PreviousCommandIssuedHandler,
-)
-    .addRequestInterceptors(LocalizationInterceptor)
-    .addErrorHandlers(GenericErrorHandler)
+        PlaybackControllerRequests.PlayCommandIssued,
+        PlaybackControllerRequests.PausedCommandIssued,
+        PlaybackControllerRequests.NextCommandIssued,
+        PlaybackControllerRequests.PreviousCommandIssued,
+
+        // Radio intent
+        RadioIntents.InProgressPlayRadio,
+        RadioIntents.CompletedPlayRadio
+    )
+    .addRequestInterceptors(Interceptors.Localization)
+    .addErrorHandlers(Errors.Generic)
     .lambda();

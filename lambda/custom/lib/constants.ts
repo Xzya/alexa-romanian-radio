@@ -1,4 +1,51 @@
-import { ui } from "ask-sdk-model";
+import { RadioDetails } from "../interfaces";
+
+export enum RequestTypes {
+    Launch = "LaunchRequest",
+    Intent = "IntentRequest",
+    SessionEnded = "SessionEndedRequest",
+    SystemExceptionEncountered = "System.ExceptionEncountered",
+}
+
+export enum IntentTypes {
+    Help = "AMAZON.HelpIntent",
+    Stop = "AMAZON.StopIntent",
+    Cancel = "AMAZON.CancelIntent",
+    Fallback = "AMAZON.FallbackIntent",
+
+    PlayRadio = "PlayRadioIntent",
+}
+
+export enum AudioPlayerIntentTypes {
+    LoopOff = "AMAZON.LoopOffIntent",
+    LoopOn = "AMAZON.LoopOnIntent",
+    Next = "AMAZON.NextIntent",
+    Pause = "AMAZON.PauseIntent",
+    Previous = "AMAZON.PreviousIntent",
+    Resume = "AMAZON.ResumeIntent",
+    ShuffleOff = "AMAZON.ShuffleOffIntent",
+    ShuffleOn = "AMAZON.ShuffleOnIntent",
+    StartOver = "AMAZON.StartOverIntent",
+}
+
+export enum AudioPlayerPlaybackRequestTypes {
+    PlaybackFailed = "AudioPlayer.PlaybackFailed",
+    PlaybackFinished = "AudioPlayer.PlaybackFinished",
+    PlaybckNearlyFinished = "AudioPlayer.PlaybackNearlyFinished",
+    PlaybackStarted = "AudioPlayer.PlaybackStarted",
+    PlaybackStopped = "AudioPlayer.PlaybackStopped",
+}
+
+export enum PlaybackControllerRequestTypes {
+    NextCommandIssued = "PlaybackController.NextCommandIssued",
+    PauseCommandIssued = "PlaybackController.PauseCommandIssued",
+    PlayCommandIssued = "PlaybackController.PlayCommandIssued",
+    PreviousCommandIssued = "PlaybackController.PreviousCommandIssued",
+}
+
+export enum SlotTypes {
+    Station = "station",
+}
 
 export enum Station {
     KissFM = "kissfm",
@@ -6,12 +53,6 @@ export enum Station {
     RockFM = "rockfm",
     MagicFM = "magicfm",
     EuropaFM = "europafm",
-}
-
-export interface RadioDetails {
-    name: string;
-    url: string;
-    card?: ui.StandardCard;
 }
 
 export const Radio = {

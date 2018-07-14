@@ -1,4 +1,10 @@
-import { Slot, slu, SlotConfirmationStatus } from "ask-sdk-model";
+import { Slot, slu, SlotConfirmationStatus, ui } from "ask-sdk-model";
+
+export interface RadioDetails {
+    name: string;
+    url: string;
+    card?: ui.StandardCard;
+}
 
 export interface RequestAttributes {
     t(key: string, ...args: any[]): string;

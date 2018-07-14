@@ -12,6 +12,8 @@ export const strings: Resource = {
             STOP_MSG: "Goodbye.",
             SELECT_ONE_MSG: "Which would you like: %s?",
             OR_MSG: " or",
+            DEVICE_NOT_SUPPORTED_MSG: "Device not supported",
+            UNKNOWN_COMMAND_MSG: "Sorry, I can't understand the command. Please say again"
         },
     },
 };

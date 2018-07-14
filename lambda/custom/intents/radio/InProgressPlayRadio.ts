@@ -1,14 +1,11 @@
 import { RequestHandler } from "ask-sdk-core";
 import { IntentRequest } from "ask-sdk-model";
-import { GetRequestAttributes, IsIntentWithIncompleteDialog, IsIntentWithCompleteDialog, GetSlotValues, ResetSlotValue } from "./utils";
-import { Radio, Station } from "./Stations";
-import { audio } from "./AudioController";
+import { GetRequestAttributes, IsIntentWithIncompleteDialog, GetSlotValues, ResetSlotValue } from "../../lib/helpers";
+import { SlotTypes, IntentTypes } from "../../lib/constants";
 
-const StationSlotName = "station";
-
-export const InProgressPlayRadioIntentHandler: RequestHandler = {
+export const InProgressPlayRadio: RequestHandler = {
     canHandle(handlerInput) {
-        return IsIntentWithIncompleteDialog(handlerInput, "PlayRadio");
+        return IsIntentWithIncompleteDialog(handlerInput, IntentTypes.PlayRadio);
     },
     handle(handlerInput) {
         const { t } = GetRequestAttributes(handlerInput);
@@ -18,7 +15,7 @@ export const InProgressPlayRadioIntentHandler: RequestHandler = {
 
         const slots = GetSlotValues(currentIntent.slots);
 
-        const station = slots[StationSlotName];
+        const station = slots[SlotTypes.Station];
 
         // if we have a match but it's ambiguous
         // ask for clarification
@@ -42,7 +39,7 @@ export const InProgressPlayRadioIntentHandler: RequestHandler = {
         // (e.g. if user said "asdf")
         // make sure to reset the value so that Alexa reprompts the user
         if (station && !station.isMatch) {
-            ResetSlotValue(request, StationSlotName);
+            ResetSlotValue(request, SlotTypes.Station);
         }
 
         // otherwise let Alexa reprompt the user
@@ -50,35 +47,6 @@ export const InProgressPlayRadioIntentHandler: RequestHandler = {
 
         return handlerInput.responseBuilder
             .addDelegateDirective(currentIntent)
-            .getResponse();
-    }
-};
-
-export const CompletedPlayRadioIntentHandler: RequestHandler = {
-    canHandle(handlerInput) {
-        return IsIntentWithCompleteDialog(handlerInput, "PlayRadio");
-    },
-    handle(handlerInput) {
-        const { t } = GetRequestAttributes(handlerInput);
-
-        const request = handlerInput.requestEnvelope.request as IntentRequest;
-
-        const slots = GetSlotValues(request.intent.slots);
-
-        const station = slots[StationSlotName];
-
-        // if we have a match and it is not ambiguous (only one resolved value)
-        // play it directly
-        if (station && station.isMatch && !station.isAmbiguous) {
-            const radio = Radio.for(station.id as Station);
-
-            return audio.play(radio.url, station.id, 0, t("PLAYING_MSG", radio.name), radio.card)
-                .getResponse();
-        }
-
-        return handlerInput.responseBuilder
-            .speak(t("WHICH_STATION_MSG"))
-            .addElicitSlotDirective(StationSlotName)
             .getResponse();
     }
 };

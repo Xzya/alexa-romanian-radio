@@ -1,11 +1,11 @@
 import { RequestInterceptor } from "ask-sdk-core";
 import * as i18n from "i18next";
 import * as sprintf from "i18next-sprintf-postprocessor";
-import { strings } from "./Strings";
+import { strings } from "../lib/Strings";
 
 type TranslationFunction = (...args: any[]) => string;
 
-export const LocalizationInterceptor: RequestInterceptor = {
+export const Localization: RequestInterceptor = {
     process(handlerInput) {
         const localizationClient = i18n.use(sprintf).init({
             lng: handlerInput.requestEnvelope.request.locale,
