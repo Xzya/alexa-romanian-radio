@@ -3,7 +3,7 @@
     "languageModel": {
       "invocationName": "romanian radio",
       "intents": [{
-          "name": "PlayRadio",
+          "name": "PlayRadioIntent",
           "slots": [{
             "name": "station",
             "type": "STATION",
@@ -130,7 +130,7 @@
     },
     "dialog": {
       "intents": [{
-        "name": "PlayRadio",
+        "name": "PlayRadioIntent",
         "confirmationRequired": false,
         "slots": [{
           "name": "station",
