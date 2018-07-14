@@ -42,51 +42,37 @@ $ ask deploy
 
 ## Local development
 
-During development, it's a pain to always have to deploy your Lambda function to see your changes.
+In order to develop locally and see your changes reflected instantly, you will need to create an SSH tunnel or expose somehow your local development server. There are several services that allow you to do this, for example [ngrok](https://ngrok.com/) or [serveo.net](https://serveo.net/).
 
-There is a better way: you can connect Alexa to your local environment instead of Lambda, without having to make any modifications to your Lambda functions. This will save you the time of always making deployment, and your changes will be applied instantly.
+### Using servo.net
 
-1. First, we will need an HTTPS endpoint. You can use [ngrok](https://ngrok.com/) for this (it's free), or any other similar tools.
+This is the easiest to setup
 
-```bash
-$ ngrok http 3980 
-```
-
-This will give you an HTTPS endpoint which will proxy all requests to your local server (something like `https://84f7599f.ngrok.io`).
-
-2. Open `.ask/config` and replace the following line
-
-```json
-"uri": "https://YOUR_URL.ngrok.io",
-```
-
-with the HTTPS endpoint from `ngrok`, e.g.:
-
-```json
-"uri": "https://84f7599f.ngrok.io",
-```
-
-3. Now we need to update the skill endpoint to our HTTPS endpoint
+1. You need to have an SSH client installed, then simply run
 
 ```bash
-$ ask deploy --target skill --profile local
+$ ssh -R 80:localhost:3980 serveo.net
+Forwarding HTTP traffic from [https://YOUR_URL]
+Press g to start a GUI session and ctrl-c to quit.
 ```
 
-You can also do this manually if you want:
+2. Once you see the URL, copy it and go to your Skill console.
 
-- Go to [your skill's dashboard](https://developer.amazon.com/alexa/console)
-- Select `Endpoint`
-- Select `HTTPS`
-- Enter your HTTPS url
-- For the `SSL certificate type` make sure you select `My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority`
+3. Open the `Endpoint` menu and select `HTTPS`
 
-4. Now we need to start the local HTTP server
+4. Under `Default Region` paste the previous URL you copied.
 
-```bash
-$ npm start
-```
+5. On the select box choose: `My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority`.
 
-This will start a server using `express` (check `lambda/local/index.ts`) and `nodemon`, which will restart the process when you make any code changes so that you don't have to.
+6. You are done! Just run `npm start` to start the local server and begin testing the skill.
+
+### Using ngrok.io
+
+1. [Install ngrok](https://ngrok.com/download)
+
+2. Run `ngrok http 3980`
+
+3. Copy the URL and follow the same steps above from 3 to 6.
 
 ## Developer tasks
 
